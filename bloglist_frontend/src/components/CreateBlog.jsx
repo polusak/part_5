@@ -1,22 +1,56 @@
-import './notification.css'
+import { useState } from 'react'
+import blogService from '../services/blogs'
 
-const Notification = (params) => {
-  const title = params.title
-  const author = params.author
-  const url = params.url
+const CreateBlog = (params) => {
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
+  const handleCreation = async (event) => {
+    event.preventDefault()
+    try {
+      const blogObject = {
+        title,
+        author,
+        url
+      }
 
+  
+    await blogService
+      .create(blogObject)
+    const blogs = await blogService.getAll()
+    params.setBlogs(blogs)
+    params.setMessage(`a new blog "${title}" by ${author} added`)
+    params.setError(false)
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
+    } catch (exception) {
+      params.setMessage('Blog creation failed')
+      params.setError(true)
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+      setTimeout(() => {
+        params.setMessage(null)
+        params.setError(false)
+      }, 5000)
+    }
+  }
     return (
       <div>
         <h2>create new</h2>
-      <form onSubmit={params.handleCreation}>
+      <form onSubmit={handleCreation}>
         <div>
           title: {' '}
             <input
             type="text"
             value={title}
             name="title"
-            onChange={({ target }) => params.setTitle(target.value)}
+            onChange={({ target }) => setTitle(target.value)}
           />
         </div>
         <div>
@@ -25,7 +59,7 @@ const Notification = (params) => {
             type="text"
             value={author}
             name="author"
-            onChange={({ target }) => params.setAuthor(target.value)}
+            onChange={({ target }) => setAuthor(target.value)}
           />
         </div>
         <div>
@@ -34,7 +68,7 @@ const Notification = (params) => {
             type="text"
             value={url}
             name="url"
-            onChange={({ target }) => params.setUrl(target.value)}
+            onChange={({ target }) => setUrl(target.value)}
           />
         </div>
         <button type="submit">create</button>
@@ -46,4 +80,4 @@ const Notification = (params) => {
     )
   }
 
-export default Notification
+export default CreateBlog
