@@ -4,8 +4,9 @@ import loginService from '../services/login'
 import blogService from '../services/blogs'
 
 
-const loginForm = (params) => {
-  const [errorMessage, setErrorMessage] = useState(null)
+const Login = (params) => {
+  const [message, setMessage] = useState(null)
+  const [error, setError] = useState(false)
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('') 
 
@@ -26,11 +27,13 @@ const loginForm = (params) => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('wrong credentials')
+      setMessage('wrong credentials')
+      setError('true')
       setUsername('')
       setPassword('')
       setTimeout(() => {
-        setErrorMessage(null)
+        setMessage(null)
+        setError(false)
       }, 5000)
     }
   }
@@ -38,7 +41,7 @@ const loginForm = (params) => {
   return (
     <div>
         <h2>Log in to application</h2>
-        <Notification message={errorMessage} />
+        <Notification error ={error} message={message} />
         <form onSubmit={handleLogin}>
         <div>
           username {' '}
@@ -64,4 +67,4 @@ const loginForm = (params) => {
   )
 }
 
-export default loginForm
+export default Login

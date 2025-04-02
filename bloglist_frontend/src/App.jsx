@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import blogService from './services/blogs'
-import LoginForm from './components/Login'
+import Login from './components/Login'
 import LoggedIn from './components/LoggedIn'
 
 const App = () => {
@@ -31,7 +31,7 @@ const App = () => {
   if (user === null) {
     return (
       <div>
-        <LoginForm 
+        <Login
           user={user}
           setUser={setUser}
         />

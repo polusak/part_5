@@ -2,15 +2,20 @@ import { useState } from 'react'
 import Blog from './Blog'
 import blogService from '../services/blogs'
 import Notification from './Notification'
+import CreateBlog from './CreateBlog'
 
 const LoggedIn = (params) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [error, setError] = useState(false)
+  const [message, setMessage] = useState(null)
+  const [creationVisible, setCreationVisible] = useState(false)
 
   const user = params.user
   const blogs = params.blogs
+  const hideWhenVisible = { display: creationVisible ? 'none' : '' }
+  const showWhenVisible = { display: creationVisible ? '' : 'none' }
 
   const handleCreation = async (event) => {
     event.preventDefault()
@@ -26,16 +31,23 @@ const LoggedIn = (params) => {
       .create(blogObject)
     const blogs = await blogService.getAll()
     params.setBlogs(blogs)
-    setTitle('')
-    setAuthor('')
-    setUrl('')
-    } catch (exception) {
-      setErrorMessage('Blog creation failed')
+    setMessage(`a new blog "${title}" by ${author} added`)
+    setError(false)
       setTitle('')
       setAuthor('')
       setUrl('')
       setTimeout(() => {
-        setErrorMessage(null)
+        setMessage(null)
+      }, 5000)
+    } catch (exception) {
+      setMessage('Blog creation failed')
+      setError(true)
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+      setTimeout(() => {
+        setMessage(null)
+        setError(false)
       }, 5000)
     }
   }
@@ -43,44 +55,26 @@ const LoggedIn = (params) => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification message={errorMessage} />
+      <Notification error={error} message={message} />
       {`${user.name} logged in `} 
       <button onClick={params.handleLogout}>logout</button>
-      
-      <h2>create new</h2>
-      <form onSubmit={handleCreation}>
-        <div>
-          title: {' '}
-            <input
-            type="text"
-            value={title}
-            name="title"
-            onChange={({ target }) => setTitle(target.value)}
-          />
-        </div>
-        <div>
-          author: {' '}
-            <input
-            type="text"
-            value={author}
-            name="author"
-            onChange={({ target }) => setAuthor(target.value)}
-          />
-        </div>
-        <div>
-          url: {' '}
-            <input
-            type="text"
-            value={url}
-            name="url"
-            onChange={({ target }) => setUrl(target.value)}
-          />
-        </div>
-        <button type="submit">create</button>
-      </form>
-
       <br />
       <br />
+      <div style={hideWhenVisible}>
+        <button onClick={() => setCreationVisible(true)}>new blog</button>
+      </div>
+      <div style={showWhenVisible}>
+        <CreateBlog 
+          title={title}
+          author={author}
+          url={url}
+          setTitle={setTitle}
+          setAuthor={setAuthor}
+          setUrl={setUrl}
+          handleCreation={handleCreation}
+          setCreationVisible={setCreationVisible}
+        />
+      </div>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
