@@ -1,15 +1,35 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Blog from './Blog'
 import Notification from './Notification'
 import CreateBlog from './CreateBlog'
+import blogService from '../services/blogs'
 
 const LoggedIn = (params) => {
   const [error, setError] = useState(false)
   const [message, setMessage] = useState(null)
   const [creationVisible, setCreationVisible] = useState(false)
+  const [blogs, setBlogs] = useState([])
+
+  const updateBlogs = async () => {
+    const updatedblogs = await blogService.getAll()
+    const blogCompar = (a, b) => {
+      if (a.likes < b.likes) {
+        return 1
+      }
+      if (b.likes < a.likes) {  
+        return -1
+      }
+      return 0
+    }
+    setBlogs( updatedblogs.sort(blogCompar) )
+  }
+
+  useEffect(() => {
+    updateBlogs()
+  
+  }, [])
 
   const user = params.user
-  const blogs = params.blogs
   const hideWhenVisible = { display: creationVisible ? 'none' : '' }
   const showWhenVisible = { display: creationVisible ? '' : 'none' }
   
@@ -35,9 +55,8 @@ const LoggedIn = (params) => {
       {blogs.map(blog =>
         <Blog key={blog.id} 
           blog={blog} 
-          //visibility={visibility} 
+          updateBlogs={updateBlogs}
         />
-        
       )}
     </div>
   )

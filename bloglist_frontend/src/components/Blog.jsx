@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog }) => {
+const Blog = (params) => {
   const [visible, setVisible] = useState(false)
-  const [likes, setLikes] = useState(blog.likes)
+  const [likes, setLikes] = useState(params.blog.likes)
   const [user, setUser] = useState('')
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
   const showWhenVisible = { display: visible ? '' : 'none' }
+
+  const blog = params.blog
 
   useEffect(() => {
     if (blog.user !== undefined && blog.user !== null) {
@@ -40,7 +42,7 @@ const Blog = ({ blog }) => {
       const response = await blogService
         .modify(blogObject)
       setLikes(response.likes)
-      
+      params.updateBlogs()
     } catch (error) {
       console.log(error)
     }
