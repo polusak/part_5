@@ -15,7 +15,6 @@ const CreateBlog = (params) => {
         url
       }
 
-  
     await blogService
       .create(blogObject)
     const blogs = await blogService.getAll()
