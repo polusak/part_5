@@ -14,7 +14,8 @@ const getAll = async () => {
 
 const get = async (blog) => {
   const response = await axios
-    .get(`${baseUrl}/${blogObject.id}`)
+    .get(`${baseUrl}/${blog.id}`)
+  
   return response.data
 }
 
