@@ -50,12 +50,14 @@ const LoggedIn = (params) => {
           setMessage={setMessage}
           setError={setError}
           setBlogs={params.setBlogs}
+          updateBlogs={updateBlogs}
         />
       </div>
       {blogs.map(blog =>
         <Blog key={blog.id} 
           blog={blog} 
           updateBlogs={updateBlogs}
+          loggedInUser={user}
         />
       )}
     </div>

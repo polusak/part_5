@@ -1,13 +1,20 @@
 import { useState, useEffect } from 'react'
 import blogService from '../services/blogs'
+import userService from '../services/users'
+import { decodeToken } from "react-jwt"
+
 
 const Blog = (params) => {
   const [visible, setVisible] = useState(false)
+  const [remove, setRemove] = useState(false)
   const [likes, setLikes] = useState(params.blog.likes)
   const [user, setUser] = useState('')
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
   const showWhenVisible = { display: visible ? '' : 'none' }
+
+  const hideRemove = { display: remove ? 'none' : '' }
+  const showRemove = { display: remove ? '' : 'none' }
 
   const blog = params.blog
 
@@ -19,6 +26,21 @@ const Blog = (params) => {
     } 
   }, [])
 
+  useEffect(() => {
+    userService.get(blog.user)
+      .then(response => {
+        const blogUserId = response.id
+        const loggedInUserId = decodeToken(params.loggedInUser.token).id
+        if (blogUserId === loggedInUserId) {
+          setRemove(true)
+        } else {
+          setRemove(false)
+        }
+      })
+
+  }, [])
+
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -27,6 +49,17 @@ const Blog = (params) => {
     marginBottom: 5
   }
 
+  const removeBlog = async (blog) => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      try {
+        await blogService
+          .remove(blog)
+        params.updateBlogs()
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
 
   const addLike = async (blog) => {
     const blogObject = {
@@ -61,7 +94,11 @@ const Blog = (params) => {
         {blog.author}<br />
         {blog.url}<br />
         {`${likes} `}<button onClick={() => addLike(blog)}>like</button><br />
-        {user}<br />
+        {user}<br /><br />
+        <div style={hideRemove}></div>
+        <div style={showRemove}>
+          <button onClick={() => removeBlog(blog)}>remove</button>
+        </div>
       </div> 
     </div>
   )

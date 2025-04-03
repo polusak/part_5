@@ -21,11 +21,12 @@ const CreateBlog = (params) => {
     params.setBlogs(blogs)
     params.setMessage(`a new blog "${title}" by ${author} added`)
     params.setError(false)
+    params.updateBlogs()
       setTitle('')
       setAuthor('')
       setUrl('')
       setTimeout(() => {
-        setMessage(null)
+        params.setMessage(null)
       }, 5000)
     } catch (exception) {
       params.setMessage('Blog creation failed')
