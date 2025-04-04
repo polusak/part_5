@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Notification from './Notification'
 import loginService from '../services/login'
 import blogService from '../services/blogs'
-
+import PropTypes from 'prop-types'
 
 const Login = (params) => {
   const [message, setMessage] = useState(null)
@@ -10,7 +10,6 @@ const Login = (params) => {
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('') 
 
-  const user = params.user
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -18,6 +17,7 @@ const Login = (params) => {
       const user = await loginService.login({
         username, password,
       })
+
       window.localStorage.setItem(
         'loggedBlogAppUser', JSON.stringify(user)
       ) 
@@ -64,6 +64,10 @@ const Login = (params) => {
       </form>
       </div>
   )
+}
+
+Login.propTypes ={
+  setUser: PropTypes.func.isRequired
 }
 
 export default Login

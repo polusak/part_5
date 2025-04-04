@@ -31,9 +31,8 @@ const App = () => {
   if (user === null) {
     return (
       <div>
-        <Login
-          user={user}
-          setUser={setUser}
+        <Login 
+        setUser={setUser}
         />
       </div>
     )

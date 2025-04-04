@@ -3,7 +3,6 @@ import blogService from '../services/blogs'
 import userService from '../services/users'
 import { decodeToken } from "react-jwt"
 
-
 const Blog = (params) => {
   const [visible, setVisible] = useState(false)
   const [remove, setRemove] = useState(false)
@@ -103,6 +102,5 @@ const Blog = (params) => {
     </div>
   )
 }
-
 
 export default Blog

@@ -33,7 +33,6 @@ const modify = async blogObject => {
   }
   const url = `${baseUrl}/${blogObject.id}`
   const response = await axios.put(url, blogObject, config)
-  console.log(response)
   return response.data
 }
 
