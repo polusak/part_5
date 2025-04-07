@@ -84,11 +84,11 @@ const Blog = (params) => {
   }
 
   return (
-    <div style={blogStyle}>
-      <div style={hideWhenVisible}> 
+    <div key='main' style={blogStyle}>
+      <div className='titleOnly' style={hideWhenVisible}> 
         {blog.title} <button onClick={() => setVisible(true)}>view</button>
       </div>
-      <div style={showWhenVisible}> 
+      <div className='contentHiddenBehindButtonClick' style={showWhenVisible}> 
         {`${blog.title} `} <button onClick={() => setVisible(false)}>hide</button><br />
         {blog.author}<br />
         {blog.url}<br />
