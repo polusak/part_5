@@ -8,6 +8,13 @@ const CreateBlog = (params) => {
 
   const handleCreation = async (event) => {
     event.preventDefault()
+    if (params.handleCreation !== undefined) {
+      try {
+        params.handleCreation(title, author, url)
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
     try {
       const blogObject = {
         title,
@@ -15,29 +22,30 @@ const CreateBlog = (params) => {
         url
       }
 
-    await blogService
-      .create(blogObject)
-    const blogs = await blogService.getAll()
-    params.setBlogs(blogs)
-    params.setMessage(`a new blog "${title}" by ${author} added`)
-    params.setError(false)
-    params.updateBlogs()
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-      setTimeout(() => {
-        params.setMessage(null)
-      }, 5000)
-    } catch (exception) {
-      params.setMessage('Blog creation failed')
-      params.setError(true)
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-      setTimeout(() => {
-        params.setMessage(null)
-        params.setError(false)
-      }, 5000)
+      await blogService
+        .create(blogObject)
+      const blogs = await blogService.getAll()
+      params.setBlogs(blogs)
+      params.setMessage(`a new blog "${title}" by ${author} added`)
+      params.setError(false)
+      params.updateBlogs()
+        setTitle('')
+        setAuthor('')
+        setUrl('')
+        setTimeout(() => {
+          params.setMessage(null)
+        }, 5000)
+      } catch (exception) {
+        params.setMessage('Blog creation failed')
+        params.setError(true)
+        setTitle('')
+        setAuthor('')
+        setUrl('')
+        setTimeout(() => {
+          params.setMessage(null)
+          params.setError(false)
+        }, 5000)
+      }
     }
   }
     return (
@@ -47,6 +55,7 @@ const CreateBlog = (params) => {
         <div>
           title: {' '}
             <input
+            aria-label="title"
             type="text"
             value={title}
             name="title"
@@ -56,6 +65,7 @@ const CreateBlog = (params) => {
         <div>
           author: {' '}
             <input
+            aria-label="author"
             type="text"
             value={author}
             name="author"
@@ -65,6 +75,7 @@ const CreateBlog = (params) => {
         <div>
           url: {' '}
             <input
+            aria-label="url"
             type="text"
             value={url}
             name="url"
