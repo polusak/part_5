@@ -32,6 +32,29 @@ const LoggedIn = (params) => {
   const user = params.user
   const hideWhenVisible = { display: creationVisible ? 'none' : '' }
   const showWhenVisible = { display: creationVisible ? '' : 'none' }
+
+  const addLike = async (blog) => {
+    const blogObject = {
+      'title': blog.title,
+      'author': blog.author,
+      'url': blog.url,
+      'user': blog.user,
+      'likes':likes + 1,
+      'id': blog.id
+    }
+
+    try {
+      const response = await blogService
+        .modify(blogObject)
+      setLikes(response.likes)
+      params.updateBlogs()
+    } catch (error) {
+      console.log(error)
+    }
+    return (
+      <div>${blog.likes}</div>
+    )
+  }
   
   return (
     <div>

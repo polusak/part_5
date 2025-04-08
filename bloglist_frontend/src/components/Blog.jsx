@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import blogService from '../services/blogs'
 import userService from '../services/users'
 import { decodeToken } from "react-jwt"
+import './blog.css'
 
 const Blog = (params) => {
   const [visible, setVisible] = useState(false)
@@ -61,26 +62,33 @@ const Blog = (params) => {
   }
 
   const addLike = async (blog) => {
-    const blogObject = {
-      'title': blog.title,
-      'author': blog.author,
-      'url': blog.url,
-      'user': blog.user,
-      'likes':likes + 1,
-      'id': blog.id
+    if (params.addLike !== undefined) {
+      try {
+        params.addLike()
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      try {
+        const blogObject = {
+          'title': blog.title,
+          'author': blog.author,
+          'url': blog.url,
+          'user': blog.user,
+          'likes':likes + 1,
+          'id': blog.id
+        }
+        const response = await blogService
+          .modify(blogObject)
+        setLikes(response.likes)
+        params.updateBlogs()
+      } catch (error) {
+        console.log(error)
+      }
+      return (
+        <div>${blog.likes}</div>
+      )
     }
-
-    try {
-      const response = await blogService
-        .modify(blogObject)
-      setLikes(response.likes)
-      params.updateBlogs()
-    } catch (error) {
-      console.log(error)
-    }
-    return (
-      <div>${blog.likes}</div>
-    )
   }
 
   return (
@@ -91,8 +99,15 @@ const Blog = (params) => {
       <div className='contentHiddenBehindButtonClick' style={showWhenVisible}> 
         {`${blog.title} `} <button onClick={() => setVisible(false)}>hide</button><br />
         {blog.author}<br />
-        {blog.url}<br />
-        {`${likes} `}<button onClick={() => addLike(blog)}>like</button><br />
+        <div>{blog.url}<br /></div>
+        <div>{`likes `}</div>
+        <div className='inline'>
+          <span>{`likes `}</span>
+          <span className='likes'>{`${likes}`}</span>
+          <span>{` `}</span>
+          <button onClick={() => addLike(blog)}>like</button>
+      </div>
+        <br />  
         {user}<br /><br />
         <div style={hideRemove}></div>
         <div style={showRemove}>
