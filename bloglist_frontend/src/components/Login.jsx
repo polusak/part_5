@@ -42,24 +42,29 @@ const Login = (params) => {
         <h2>Log in to application</h2>
         <Notification error ={error} message={message} />
         <form onSubmit={handleLogin}>
-        <div>
+        <label>
           username {' '}
             <input
-            type="text"
+            aria_label='username'
+            id='username'
+            type="username"
             value={username}
             name="Username"
             onChange={({ target }) => setUsername(target.value)}
           />
-        </div>
-        <div>
+        </label><br />
+        <label>
           password {' '}
             <input
+            aria_label='password'
+            id='password'
             type="password"
             value={password}
             name="Password"
             onChange={({ target }) => setPassword(target.value)}
           />
-        </div>
+        </label>
+        <br />
         <button type="submit">login</button>
       </form>
       </div>
