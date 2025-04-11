@@ -52,7 +52,7 @@ const CreateBlog = (params) => {
       <div>
         <h2>create new</h2>
       <form onSubmit={handleCreation}>
-        <div>
+        <label>
           title: {' '}
             <input
             aria-label="title"
@@ -61,8 +61,8 @@ const CreateBlog = (params) => {
             name="title"
             onChange={({ target }) => setTitle(target.value)}
           />
-        </div>
-        <div>
+        </label><br />
+        <label>
           author: {' '}
             <input
             aria-label="author"
@@ -71,8 +71,8 @@ const CreateBlog = (params) => {
             name="author"
             onChange={({ target }) => setAuthor(target.value)}
           />
-        </div>
-        <div>
+        </label><br />
+        <label>
           url: {' '}
             <input
             aria-label="url"
@@ -81,7 +81,7 @@ const CreateBlog = (params) => {
             name="url"
             onChange={({ target }) => setUrl(target.value)}
           />
-        </div>
+        </label><br />
         <button type="submit">create</button>
         <br />
         <br />

@@ -43,7 +43,10 @@ const LoggedIn = (params) => {
       <br />
       <br />
       <div style={hideWhenVisible}>
-        <button onClick={() => setCreationVisible(true)}>new blog</button>
+        <button 
+          onClick={() => setCreationVisible(true)}
+        >new blog
+        </button>
       </div>
       <div style={showWhenVisible}>
         <CreateBlog 

@@ -37,4 +37,20 @@ describe('Blog app', () => {
       await expect(locator2).toBeVisible()
     })
   })
+  describe('When logged in', () => {
+    test('a new blog can be created', async ({ page }) => {
+      await page.getByRole('textbox').first().fill('mluukkai')
+      await page.getByRole('textbox').last().fill('salainen')
+      await page.getByRole('button', { name: 'login' }).click()
+      await page.getByRole('button', {
+        name: /new blog/i,
+        hidden: false
+      }).click()
+      await page.getByLabel(/title/i).fill('title')
+      await page.getByLabel(/author/i).fill('author')
+      await page.getByLabel(/url/i).fill('url')
+      await page.getByRole('button', { name: 'create' }).click()
+      await expect(page.getByText('title')).toBeVisible()
+    })
+  })
 })
