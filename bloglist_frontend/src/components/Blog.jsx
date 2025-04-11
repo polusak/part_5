@@ -93,14 +93,19 @@ const Blog = (params) => {
 
   return (
     <div key='main' style={blogStyle}>
-      <div className='titleOnly' style={hideWhenVisible}> 
-        {blog.title} <button onClick={() => setVisible(true)}>view</button>
+      <div className='titleOnly' 
+        style={hideWhenVisible}
+        data-testid='visible_before_click'
+      > 
+        <label>{blog.title}</label> <button onClick={() => setVisible(true)}>view</button>
       </div>
-      <div className='contentHiddenBehindButtonClick' style={showWhenVisible}> 
+      <div className='contentHiddenBehindButtonClick' 
+        style={showWhenVisible}
+        data-testid='visible_after_click'
+      > 
         {`${blog.title} `} <button onClick={() => setVisible(false)}>hide</button><br />
         {blog.author}<br />
         <div>{blog.url}<br /></div>
-        <div>{`likes `}</div>
         <div className='inline'>
           <span>{`likes `}</span>
           <span className='likes'>{`${likes}`}</span>

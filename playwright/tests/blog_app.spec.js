@@ -1,5 +1,25 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
 
+const sleep = ms => new Promise(r => setTimeout(r, ms))
+
+const loginWith = async (page, username, password)  => {
+  await page.getByRole('textbox').first().fill(username)
+  await page.getByRole('textbox').last().fill(password)
+  await page.getByRole('button', { name: 'login' }).click()
+}
+
+const createBlog = async (page, title, author, url) => {
+  await page.getByRole('button', {
+    name: /new blog/i,
+    hidden: false
+  }).click()
+  await page.getByLabel(/title/i).fill(title)
+  await page.getByLabel(/author/i).fill(author)
+  await page.getByLabel(/url/i).fill(url)
+  await page.getByRole('button', { name: 'create' }).click()
+}
+
+
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
     await request.post('http://localhost:3001/api/testing/reset')
@@ -22,9 +42,7 @@ describe('Blog app', () => {
 
   describe('Login', () => {
     test('succeeds with correct credentials', async ({ page }) => {
-      await page.getByRole('textbox').first().fill('mluukkai')
-      await page.getByRole('textbox').last().fill('salainen')
-      await page.getByRole('button', { name: 'login' }).click()
+      await loginWith(page, 'mluukkai', 'salainen')
       await expect(page.getByText('Matti Luukkainen logged in')).toBeVisible()
     })
 
@@ -39,34 +57,31 @@ describe('Blog app', () => {
   })
   describe('When logged in', () => {
     test('a new blog can be created', async ({ page }) => {
-      await page.getByRole('textbox').first().fill('mluukkai')
-      await page.getByRole('textbox').last().fill('salainen')
-      await page.getByRole('button', { name: 'login' }).click()
-      await page.getByRole('button', {
-        name: /new blog/i,
-        hidden: false
-      }).click()
-      await page.getByLabel(/title/i).fill('title')
-      await page.getByLabel(/author/i).fill('author')
-      await page.getByLabel(/url/i).fill('url')
-      await page.getByRole('button', { name: 'create' }).click()
-      await expect(page.getByText('title')).toBeVisible()
+      await loginWith(page, 'mluukkai', 'salainen')
+      await createBlog(page, 'blogTitle', 'author', 'url')
+      await sleep(6000)
+      await expect(page.getByTestId("visible_after_click")).toHaveText(/blogTitle/i)
     })
     test('the blog can be liked', async ({ page }) => {
-      await page.getByRole('textbox').first().fill('mluukkai')
-      await page.getByRole('textbox').last().fill('salainen')
-      await page.getByRole('button', { name: 'login' }).click()
-      await page.getByRole('button', {
-        name: /new blog/i,
-        hidden: false
-      }).click()
+      await loginWith(page, 'mluukkai', 'salainen')
+      await createBlog(page, 'blogTitle', 'author', 'url')
+      await page.getByRole('button', { name: 'view' }).first().click()
+      await page.getByRole('button', { name: 'like' }).click()
+      await expect(page.getByText('likes 0')).not.toBeVisible()
+      await expect(page.getByText('likes 1')).toBeVisible()
+    })
+    test('the blog can be deleted by the user who created it', async ({ page }) => {
+      page.on('dialog', dialog => dialog.accept())
+      await loginWith(page, 'mluukkai', 'salainen')
+      await createBlog(page, 'blogTitle', 'author', 'url')
       await page.getByLabel(/title/i).fill('title')
       await page.getByLabel(/author/i).fill('author')
       await page.getByLabel(/url/i).fill('url')
       await page.getByRole('button', { name: 'create' }).click()
       await page.getByRole('button', { name: 'view' }).first().click()
-      await page.getByRole('button', { name: 'like' }).click()
-      await expect(page.getByText(/likes 0/i)).toBeVisible()
+      await page.getByRole('button', { name: 'remove' }).click()
+      await sleep(6000)
+      await expect(page.getByTestId("visible_before_click")).not.toHaveText(/blogTitle/i)
     })
   })
 })
