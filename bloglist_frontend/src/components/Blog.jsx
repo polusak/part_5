@@ -114,7 +114,10 @@ const Blog = (params) => {
       </div>
         <br />  
         {user}<br /><br />
-        <div style={hideRemove}></div>
+        <div 
+          style={hideRemove}
+          data-testid='remove_hidden'
+        ></div>
         <div style={showRemove}>
           <button onClick={() => removeBlog(blog)}>remove</button>
         </div>

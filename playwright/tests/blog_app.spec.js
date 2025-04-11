@@ -30,6 +30,13 @@ describe('Blog app', () => {
         password: 'salainen'
       }
     })
+    await request.post('http://localhost:3001/api/users', {
+      data: {
+        name: 'testname',
+        username: 'testusername',
+        password: 'testpassword'
+      }
+    })
     await page.goto('http://localhost:5173')
   })
 
@@ -49,6 +56,7 @@ describe('Blog app', () => {
     test('fails with wrong credentials', async ({ page }) => {
       await page.getByRole('textbox').first().fill('testusername')
       await page.getByRole('textbox').last().fill('testpassword')
+      await page.getByRole('button', { name: 'login' }).click()
       const locator1 = page.getByLabel(/username/i)
       const locator2 = page.getByLabel(/password/i)
       await expect(locator1).toBeVisible()
@@ -82,6 +90,14 @@ describe('Blog app', () => {
       await page.getByRole('button', { name: 'remove' }).click()
       await sleep(6000)
       await expect(page.getByTestId("visible_before_click")).not.toHaveText(/blogTitle/i)
+    })
+    test('Only the user who created the blog can see the button for removal', async ({ page }) => {
+      await loginWith(page, 'mluukkai', 'salainen')
+      await createBlog(page, 'blogTitle', 'author', 'url')
+      await page.getByRole('button', { name: 'logout' }).click()
+      await loginWith(page, 'testusername', 'testpassword')
+      await page.getByRole('button', { name: 'view' }).first().click()
+      await expect(page.getByText('remove')).not.toBeVisible()
     })
   })
 })
