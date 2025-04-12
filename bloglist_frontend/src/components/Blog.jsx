@@ -104,7 +104,9 @@ const Blog = (params) => {
         data-testid='visible_after_click'
       > 
         {`${blog.title} `} <button onClick={() => setVisible(false)}>hide</button><br />
-        {blog.author}<br />
+        <div data-testid='author'>
+          {blog.author}
+        </div>
         <div>{blog.url}<br /></div>
         <div className='inline'>
           <span>{`likes `}</span>
